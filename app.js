@@ -36,10 +36,12 @@ app.get('/songs', async ({ query: { name } }, res) => {
     .filter(entry => entry.t === CIFRACLUB_SONG_ID)
     // Change properties from CifraClub to a more human-readable fancy
     .map(({ m, a, u, d }) => ({
-      songName: m,
-      artistName: a,
-      songSlug: u,
-      artistSlug: d,
+      name: m,
+      slug: u,
+      artist: {
+        name: a,
+        slug: d
+      }
     }))
 
   res.json(finalResult)
