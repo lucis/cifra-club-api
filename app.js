@@ -4,14 +4,16 @@ const cheerio = require('cheerio')
 
 const app = express()
 
-const CIFRACLUB_API = 'https://studiosolsolr-a.akamaihd.net/cc/h2/'
+const SEARCH_SONGS_API = 'https://studiosolsolr-a.akamaihd.net/cc/h2/'
+const getChordsApi = (artist, song) => `https://www.cifraclub.com.br/${artist}/${song}/imprimir.html`
+const getArtistApi = (artistSlug) => `https://www.vagalume.com.br/${artistSlug}/index.js`
 
 /**
  * Receives a part of a song name and search for songs in CifraClub
  */
-app.get('/songs', async (req, res) => {
-  const response = await axios.get(CIFRACLUB_API, {
-    params: { q: req.query.name },
+app.get('/songs', async ({ query: { name }}, res) => {
+  const response = await axios.get(SEARCH_SONGS_API, {
+    params: { q: name },
   })
   const rawData = response.data
 
@@ -43,9 +45,7 @@ app.get('/songs', async (req, res) => {
  * Get the chords of a specific song in the CifraClub service
  */
 app.get('/chords/:artist/:song', async ({ params: { artist, song } }, res) => {
-  const response = await axios.get(
-    `https://www.cifraclub.com.br/${artist}/${song}/imprimir.html`
-  )
+  const response = await axios.get(getChordsApi(artist, song))
   const $ = cheerio.load(response.data)
   $('.tablatura').remove()
   return res.json($('pre').html())
@@ -59,9 +59,7 @@ app.get('/chords/:artist/:song', async ({ params: { artist, song } }, res) => {
 app.get(
   '/artists/:artistslug',
   async ({ params: { artistslug }, query: { complete } }, res) => {
-    const response = await axios.get(
-      `https://www.vagalume.com.br/${artistslug}/index.js`
-    )
+    const response = await axios.get(getArtistApi(artistslug))
     const artist = response.data.artist
 
     if (!artist) return res.status(404).json({})
