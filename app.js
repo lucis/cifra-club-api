@@ -44,7 +44,8 @@ app.get('/songs', async ({ query: { name } }, res) => {
       }
     }))
     .map(song => {
-      return axios.get(getArtistApi(song.artist.slug)).then(response => ({...song, genre: response.data.artist.genre && response.data.artist.genre[0].name}))
+      return axios.get(getArtistApi(song.artist.slug))
+      .then(response => ({...song, genre: response.data.artist && response.data.artist.genre && response.data.artist.genre[0].name}), () => ({...song}))
     })
   const songs = await Promise.all(finalResult)  
   res.json(songs)
