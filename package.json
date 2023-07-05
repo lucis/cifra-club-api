@@ -4,14 +4,18 @@
   "description": "Search by songname in the CifraClub service",
   "main": "app.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "dev": "nodemon app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.2",
     "express": "^4.16.3",
     "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
 }
